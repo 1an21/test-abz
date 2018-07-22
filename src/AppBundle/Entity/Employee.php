@@ -1,12 +1,12 @@
 <?php
 
 namespace AppBundle\Entity;
-
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Employee
- *
+ * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="employee", indexes={@ORM\Index(name="parent", columns={"parent"})})
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\EmployeeRepository")
  */
@@ -52,21 +52,47 @@ class Employee
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="employmentDate", type="date", nullable=false)
+     * @ORM\Column(name="employmentDate", type="date", nullable=true)
      */
     private $employmentDate;
 
     /**
      * @var \Employee
-     *
-     * @ORM\ManyToOne(targetEntity="Employee")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Employee", inversedBy="children")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent", referencedColumnName="id_empl")
+     *   @ORM\JoinColumn(name="parent", referencedColumnName="id_empl",onDelete="CASCADE")
      * })
      */
     private $parent;
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
+     */
+    private $lft;
 
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $lvl;
 
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="root", type="integer", nullable=true)
+     */
+    private $root;
+    /**
+     * @ORM\OneToMany(targetEntity="Employee", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    protected $children;
 
 
     /**
@@ -221,6 +247,9 @@ class Employee
     public function getParent()
     {
         return $this->parent;
+    }
+    public function getChildren() {
+        return $this->children;
     }
 }
 

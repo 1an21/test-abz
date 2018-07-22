@@ -1,13 +1,88 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}ABZ{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <style>
+        body {
+            padding-top: 90px;
+        }
+        dl{
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            margin-top: 0;
+            margin-bottom: 0px;
+        }
+        dd{
+            padding: 0;
+            float: left;
+            width: 50%;
+            margin: 0;
+            margin-left: 0;
+        }
+        dt{
+            float: left;
+            width: 30%;
+            padding: 0;
+            margin: 0;
+            font-weight: 700;
+        }
+        ol {
+            list-style: none;
+            counter-reset: my-awesome-counter;
+        }
+        li {
+            counter-increment: my-awesome-counter;
+            margin: 0.25rem;
+        }
+        li::before {
+            content: '';
+            background: #e1e8e9;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            display: inline-block;
+            line-height: 1rem;
+
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+        ol ol li::before {
+            background: #aeb3b3;
+        }
+        ol ol ol li::before {
+            background: #5f5c5e;
+        }
+        ol > li:hover:before{
+            background: #272729;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ path('index') }}">ABZ</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+</div><!-- /.container -->
+
+{% block javascripts %}{% endblock %}
+</body>
 </html>

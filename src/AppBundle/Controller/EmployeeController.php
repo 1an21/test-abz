@@ -12,6 +12,8 @@ use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 /**
  * Class EmployeeController
  * @package AppBundle\Controller
@@ -57,10 +59,29 @@ class EmployeeController extends FOSRestController implements ClassResourceInter
      *         404 = "Return when not found"
      *     }
      * )
+     *
+     * @Route("/", name="index")
      */
+
     public function cgetAction(Request $request)
     {
-//        return $this->getEmployeeRepository()->createFindAllQuery()->getResult();
+//        $em = $this->getDoctrine()->getManager();
+//        $repo = $em->getRepository('AppBundle:Employee');
+//        $options = array(
+//            'decorate' => true,
+//            'rootOpen' => '<ul>',
+//            'rootClose' => '</ul>',
+//            'childOpen' => '<li>',
+//            'childClose' => '</li>'
+//        );
+//        $employees = $repo->childrenHierarchy(
+//            null, /* starting from root nodes */
+//            true, /* false: load all children, true: only direct */
+//            $options,
+//            true,//include node
+//            false
+//        );
+//        return $this->render('Employee/index.html.twig', array('employees' => $employees));
         $queryBuilder = $this->getEmployeeRepository()->searchQuery();
         if ($request->query->getAlnum('filter')) {
             $queryBuilder->where('e.name LIKE :name')
@@ -68,9 +89,15 @@ class EmployeeController extends FOSRestController implements ClassResourceInter
                 ->orwhere('e.salary LIKE :name')
                 ->setParameter('name', '%' . $request->query->getAlnum('filter') . '%');
         }
-        $queryBuilder->getQuery()->getResult();
-        return $this->render('abz/index.html.twig', [
-            'employee' => $employees,
+        $query = $queryBuilder->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $employees = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 100)
+        );
+        return $this->render('Employee/index.html.twig', [
+            'employees' => $employees,
         ]);
     }
 
@@ -86,35 +113,10 @@ class EmployeeController extends FOSRestController implements ClassResourceInter
      *         404 = "Return when not found"
      *     }
      * )
+     * * @Route("/loco", name="loco")
      */
     public function postAction(Request $request)
     {
-        $form = $this->createForm(EmployeeType::class, null, [
-            'csrf_protection' => false,
-        ]);
-
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            return $form;
-        }
-
-        $employee = $form->getData();
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($employee);
-        $em->flush();
-
-        $routeOptions = [
-            'id' => $employee->getId(),
-
-            '_format' => $request->get('_format'),
-        ];
-
-        $id=$employee->getId();
-
-        $this->routeRedirectView('', $routeOptions, Response::HTTP_CREATED);
-        return $this->getEmployeeRepository()->createFindOneByIdQuery($id)->getOneOrNullResult();
-
 
     }
 

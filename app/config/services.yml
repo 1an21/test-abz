@@ -12,8 +12,7 @@ services:
     app.jwt_token_authenticator:
             parent: lexik_jwt_authentication.security.guard.jwt_token_authenticator
             class: AppBundle\Security\Guard\JWTAuthenticator
-    gedmo.listener.loggable:
-        class: AppBundle\Listener\Listener
+    gedmo.listener.tree:
+        class: Gedmo\Tree\TreeListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
-            

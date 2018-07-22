@@ -9,6 +9,6 @@ app:
     type:     annotation
 
 employees:
-    resource: "@AppBundle/Controller/EmployeeController.php"
-    type: rest
+    resource: "@AppBundle/Controller"
+    type: annotation
 
