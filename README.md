@@ -1,4 +1,3 @@
-**Rest API for employees** 
 
 For use:
 

@@ -4,10 +4,6 @@ NelmioApiDocBundle:
 login_check:
     path:     /login_check
     methods:  [POST]
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
-
 employees:
     resource: "@AppBundle/Controller"
     type: annotation
