@@ -6,34 +6,37 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\User;
-use FOS\RestBundle\View\View;
+use AppBundle\Form\Type\UserType;
 class AuthController extends Controller
 {
     /**
      * @Route("/register", name="register")
-     * @Method({"POST"})
+     * @Method({"GET","POST"})
      */
     public function registerAction(Request $request)
     {
-        $em = $this->get('doctrine')->getManager();
-        $encoder = $this->container->get('security.password_encoder');
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-        $type=$em->getRepository('AppBundle:UserTypes')->findOneByType('ROLE_USER');
-        $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $encoder = $this->get('security.password_encoder');
+            $password = $encoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($password);
 
-        $username = $request->request->get('_username');
-        $password = $request->request->get('_password');
+            $user->setRole('ROLE_USER');
 
-        $user = new User($username);
-        $user->setPassword($encoder->encodePassword($user, $password));
-        $user->setRole($type);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
 
-        $em->persist($user);
-        $em->flush($user);
-        $nameuser=$user->getUsername();
-        return new View("User $nameuser successfully created");
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('login/register.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
 }

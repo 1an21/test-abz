@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
 /**
  *
  * @ORM\Table(name="user_types")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\UserTypesRepository")
+ * @ORM\Entity
  */
 class UserTypes implements RoleInterface
 {

@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Employee
  * @Gedmo\Tree(type="nested")
@@ -94,7 +94,25 @@ class Employee
      */
     protected $children;
 
+    /**
+     * @ORM\Column(name="images", type="string", nullable=true)
+     *
+     * @Assert\NotBlank(message="Please, upload the image ")
+     * @Assert\Image(mimeTypes="image/*" )
+     */
+    private $image;
 
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
     /**
      * Get id
      *

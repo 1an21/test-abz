@@ -89,7 +89,7 @@ ALTER TABLE `user_types`
 ALTER TABLE `employee`
   ADD CONSTRAINT `FK_5D9F75A13D8E604F` FOREIGN KEY (`parent`) REFERENCES `employee` (`id_empl`) ON DELETE CASCADE;
 
-
+ALTER TABLE `employee` AUTO_INCREMENT = 1
 ALTER TABLE `users`
   ADD CONSTRAINT `FK_1483A5E957698A6A` FOREIGN KEY (`role`) REFERENCES `user_types` (`id`); ");
     }

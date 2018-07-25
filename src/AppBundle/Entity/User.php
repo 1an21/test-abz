@@ -1,61 +1,98 @@
 <?php
-
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
+ * @ORM\Entity
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="This email address is already in use")
  */
 class User implements UserInterface
 {
     /**
+     * @ORM\Id;
      * @ORM\Column(type="integer")
-     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @ORM\Column(type="string", length=25, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $username;
+    protected $email;
 
     /**
-     * @ORM\Column(type="string", length=500)
+     * @ORM\Column(type="string", length=40)
      */
-    private $password;
+    protected $name;
 
     /**
-     * @var \AppBundle\Entity\Employee
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserTypes")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="role", referencedColumnName="id")
-     * })
+     * @ORM\Column(type="string", length=50)
      */
-    private $role;
+    protected $role;
 
     /**
-     * User constructor.
-     * @param $username
+     * @Assert\Length(max=4096)
      */
-    public function __construct($username)
+    protected $plainPassword;
+
+    /**
+     * @ORM\Column(type="string", length=64)
+     */
+    protected $password;
+
+    public function eraseCredentials()
     {
-        $this->username = $username;
+        return null;
+    }
 
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    public function setRole($role = null)
+    {
+        $this->role = $role;
+    }
+
+    public function getRoles()
+    {
+        return [$this->getRole()];
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function getUsername()
     {
-        return $this->username;
+        return $this->email;
     }
 
-    public function getSalt()
+    public function getEmail()
     {
-        return null;
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 
     public function getPassword()
@@ -68,65 +105,18 @@ class User implements UserInterface
         $this->password = $password;
     }
 
-    public function getRoles()
+    public function getPlainPassword()
     {
-        return array($this->role);
-    }
-    public function setRoles($role)
-    {
-        $this->role = $role;
+        return $this->plainPassword;
     }
 
-    public function eraseCredentials()
+    public function setPlainPassword($plainPassword)
     {
+        $this->plainPassword = $plainPassword;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getSalt()
     {
-        return $this->id;
+        return null;
     }
-
-    /**
-     * Set username
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Set role
-     *
-     * @param \AppBundle\Entity\UserTypes $role
-     *
-     * @return User
-     */
-    public function setRole(\AppBundle\Entity\UserTypes $role)
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return string
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
 }

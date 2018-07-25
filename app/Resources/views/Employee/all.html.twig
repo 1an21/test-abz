@@ -1,0 +1,77 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    {% if app.user != null %}
+    <div>
+        <form action="{{ path('all') }}" method="get">
+            <label for="filter">Filter</label>
+            <input name="filter" type="text">
+            <button type="submit" class="btn btn-default btn-sm">Filter</button>
+            <a href="{{ path('create')}}" class="btn btn-default btn-sm" style="float: right">Create</a>
+        </form>
+    </div>
+
+
+    <table class="table table-hover table-responsive">
+        <thead>
+        <tr>
+            <th class="col-sm-2 {% if employees.isSorted('e.surname') %}sorted{% endif %}">{{ knp_pagination_sortable(employees, 'Surname', 'e.surname') }}</th>
+            <th class="col-sm-1 {% if employees.isSorted('e.name') %}sorted{% endif %}">{{ knp_pagination_sortable(employees, 'Name', 'e.name') }}</th>
+            <th class="col-sm-1 {% if employees.isSorted('e.position') %}sorted{% endif %}">{{ knp_pagination_sortable(employees, 'Position', 'e.position') }}</th>
+            <th class="col-sm-1 {% if employees.isSorted('e.salary') %}sorted{% endif %}">{{ knp_pagination_sortable(employees, 'Salary', 'e.salary') }}</th>
+            <th class="col-sm-2 {% if employees.isSorted('e.employmentDate') %}sorted{% endif %}">{{ knp_pagination_sortable(employees, 'Employment Date', 'e.employmentDate') }}</th>
+            <th class="col-sm-2 ">Photo</th>
+            <th class="col-sm-1 ">Boss</th>
+            <th class="col-sm-2">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+
+    {% for employee in employees %}
+    {% if employee.parent == null %}
+    <tr>
+    <td>{{ employee.surname }}</td>
+    <td>{{ employee.name }}</td>
+    <td>{{ employee.position }}</td>
+    <td>{{ employee.salary }}</td>
+    <td>{{ employee.employmentDate|date('Y-m-d') }}</td>
+        <td><img  src="{{ asset('images/' ~ employee.getImage()) }}" style=" width:200px;"></td>
+        <td>-</td>
+        <td>
+            <a href="{{ path('edit', { 'id': employee.id }) }}" class="btn btn-default btn-sm">Edit</a>
+            <a href="{{ path('delete', { 'employee': employee.id }) }}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+    </tr>
+    {% elseif employee.parent != null %}
+    <tr>
+    <td>{{ employee.surname }}</td>
+    <td>{{ employee.name }}</td>
+    <td>{{ employee.position }}</td>
+    <td>{{ employee.salary }}</td>
+    <td>{{ employee.employmentDate|date('Y-m-d') }}</td>
+        <td><img  src="{{ asset('images/' ~ employee.getImage()) }}" style=" width:200px;"></td>
+    <td>{{ employee.parent.getSurname() }}</td>
+        <td>
+            <a href="{{ path('edit', { 'id': employee.id }) }}" class="btn btn-default btn-sm">Edit</a>
+            <a href="{{ path('delete', { 'employee': employee.id }) }}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+    </tr>
+    {% endif %}
+
+
+    {% endfor %}
+
+    </tbody>
+    </table>
+
+    <div class="navigation text-center">
+    {{ knp_pagination_render(employees) }}
+    </div>
+    {% endif %}
+    {% if app.user == null %}
+        <div style="text-align:center;"><a href="login" class="btn btn-info" style="text-align:center;"> Login</a>
+            <a href="register" class="btn btn-info" style="text-align:center;"> Register</a>
+        </div>
+    {% endif %}
+{% endblock %}
