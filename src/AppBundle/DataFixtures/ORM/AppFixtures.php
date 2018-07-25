@@ -24,6 +24,7 @@ class AppFixtures extends Fixture implements FixtureInterface
             $employee->setSalary(mt_rand(1000, 2000));
             $employee->setEmploymentDate(new \DateTime($i.$empdate));
             $employee->setParent($parent);
+            $employee->setImage('4afb36bdc60d9dc5cdd4fbb4eca7f173.jpeg');
             $manager->persist($employee);
             $manager->flush();
         }
